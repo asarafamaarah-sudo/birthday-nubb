@@ -502,6 +502,19 @@
     // everything is integrated: pink_background.jpg as initial background, video swap later.
     console.log("🎂 Happy 20th Birthday Nubb! Tap anywere to unleash the celebration 💖");
   })();
+
+  <button onclick="document.getElementById('fileInput').click()" style="position:fixed;bottom:20px;left:20px;z-index:999">Select Video</button>
+<input type="file" id="fileInput" accept="video/*" style="display:none" onchange="loadVideo(this.files[0])">
+
+<script>
+function loadVideo(file) {
+    const url = URL.createObjectURL(file);
+    const video = document.getElementById('bgVideo');
+    video.src = url;
+    video.load();
+    console.log("Video loaded from your computer!");
+}
+</script>
 </script>
 </body>
 </html>
