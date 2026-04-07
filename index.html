@@ -2,23 +2,30 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy 20th Birthday Nubb!</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Happy 20th Birthday Nubb! ✨</title>
 <style>
-  /* Full-screen pink background */
-  body, html {
+  /* ========== FULLSCREEN FOUNDATION ========== */
+  * {
     margin: 0;
     padding: 0;
-    width: 100%;
-    height: 100%;
-    font-family: 'Dancing Script', cursive;
-    background: url('pink_background.jpg') no-repeat center center fixed;
-    background-size: cover;
-    overflow: hidden;
-    position: relative;
+    box-sizing: border-box;
+    user-select: none; /* clean tapping, no text selection */
   }
 
-  /* Video hidden initially */
+  body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Dancing Script', cursive;
+    /* initial pink background image (as in original) */
+    background: url('pink_background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+    transition: background 0.5s ease;
+  }
+
+  /* ========== BACKGROUND VIDEO (hidden initially) ========== */
   #bgVideo {
     position: fixed;
     top: 0;
@@ -28,30 +35,39 @@
     object-fit: cover;
     display: none;
     z-index: -2;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+  #bgVideo.show-video {
+    display: block;
+    opacity: 1;
   }
 
-  /* Floating hearts & sparkles */
+  /* ========== FLOATING HEART & SPARKLE (original style) ========== */
   .heart, .sparkle {
     position: absolute;
     pointer-events: none;
     will-change: transform, opacity;
+    z-index: 200;
   }
   .heart {
     width: 30px;
     height: 30px;
-    background: red;
+    background: #ff3366;
     clip-path: polygon(50% 0%, 61% 10%, 70% 20%, 75% 30%, 70% 40%, 50% 60%, 30% 40%, 25% 30%, 30% 20%, 39% 10%);
-    opacity: 0.8;
+    opacity: 0.85;
+    filter: drop-shadow(0 0 4px #ff99bb);
   }
   .sparkle {
     width: 8px;
     height: 8px;
-    background: gold;
+    background: radial-gradient(circle, gold, #ffcc66);
     border-radius: 50%;
-    opacity: 0.8;
+    opacity: 0.9;
+    box-shadow: 0 0 6px #ffdd88;
   }
 
-  /* Tap-to-reveal message */
+  /* ========== TAP-TO-REVEAL MESSAGE CONTAINER ========== */
   #messageContainer {
     position: absolute;
     top: 50%;
@@ -59,119 +75,454 @@
     transform: translate(-50%, -50%);
     color: white;
     text-align: center;
-    font-size: 3em;
+    font-size: clamp(2.2rem, 8vw, 4.2rem);
     cursor: pointer;
-    z-index: 10;
+    z-index: 30;
     opacity: 0;
-    transition: opacity 1s ease;
-    text-shadow: 2px 2px 8px #ff69b4;
+    transition: opacity 1s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+    text-shadow: 2px 2px 12px #ff69b4, 0 0 20px #ff99cc;
+    background: rgba(255, 105, 135, 0.25);
+    backdrop-filter: blur(10px);
+    padding: 0.4em 1.2em;
+    border-radius: 70px;
+    white-space: nowrap;
+    letter-spacing: 2px;
+    pointer-events: none; /* click goes through but container is just visual */
+  }
+  @media (max-width: 550px) {
+    #messageContainer {
+      white-space: normal;
+      line-height: 1.3;
+      padding: 0.5rem 1rem;
+      width: 85%;
+    }
   }
   #messageContainer.show {
     opacity: 1;
   }
 
-  /* Name in cursive */
+  /* ========== CURSIVE NAME (brush script style) ========== */
   #nameText {
-    font-family: "Brush Script MT", cursive;
-    font-size: 50px;
-    color: #ff6fa5;
+    font-family: "Brush Script MT", "Dancing Script", cursive;
+    font-size: clamp(2.5rem, 10vw, 5rem);
+    color: #fff0c0;
     margin-top: 20px;
     opacity: 0;
-    transform: scale(0.5);
-    transition: all 1s ease;
-    text-shadow: 0 0 10px #ffb6d9, 0 0 20px #ffcce6;
+    transform: scale(0.5) rotate(-3deg);
+    transition: all 0.9s cubic-bezier(0.34, 1.2, 0.64, 1);
+    text-shadow: 0 0 15px #ff80a5, 0 0 30px #ffb3c6, 3px 3px 10px #b13b5e;
+    background: linear-gradient(135deg, #fff3cf, #ffdfaa);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: #ffecb3;
+    display: inline-block;
   }
   #nameText.show {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) rotate(0deg);
+  }
+
+  /* subtle tap hint (elegant pulse) */
+  .tap-hint {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.3rem;
+    color: rgba(255, 245, 220, 0.95);
+    background: rgba(0,0,0,0.2);
+    backdrop-filter: blur(5px);
+    width: fit-content;
+    margin: 0 auto;
+    padding: 6px 22px;
+    border-radius: 60px;
+    pointer-events: none;
+    z-index: 25;
+    font-weight: 500;
+    animation: gentleFloat 1.8s infinite;
+    letter-spacing: 1px;
+  }
+
+  @keyframes gentleFloat {
+    0% { opacity: 0.5; transform: translateY(0px) scale(0.96);}
+    100% { opacity: 1; transform: translateY(-3px) scale(1);}
+  }
+
+  .tap-hint.hide {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.6s ease;
+  }
+
+  /* optional decorative ribbon */
+  .birthday-ribbon {
+    position: absolute;
+    bottom: 18px;
+    right: 18px;
+    font-size: 0.85rem;
+    color: #ffe2ec;
+    background: #ff7b9cb3;
+    padding: 4px 12px;
+    border-radius: 40px;
+    backdrop-filter: blur(4px);
+    font-family: monospace;
+    z-index: 12;
+    pointer-events: none;
+  }
+
+  /* extra responsive adjustments */
+  @media (max-width: 480px) {
+    .tap-hint { font-size: 1rem; bottom: 20px; }
   }
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<video id="bgVideo" autoplay muted loop>
+<!-- Background Video (hidden at start, uses same id as original) -->
+<video id="bgVideo" autoplay muted loop playsinline>
+  <!-- Replace 'your_video.mp4' with your own video file -->
   <source src="your_video.mp4" type="video/mp4">
+  <!-- Fallback: free cinematic sparkle background that fits birthday vibe -->
+  <source src="https://assets.mixkit.co/videos/preview/mixkit-golden-sparkles-falling-on-a-soft-pink-background-32868-large.mp4" type="video/mp4">
 </video>
 
+<!-- Main message container (original structure enhanced) -->
 <div id="messageContainer">
   🎉 Happy 20th Birthday Nubb! 🎉
   <div id="nameText">Nubb 💕</div>
 </div>
 
+<div class="tap-hint" id="tapHint">✨ tap anywhere to reveal the magic ✨</div>
+<div class="birthday-ribbon">🎂 20th · forever young 🎂</div>
+
 <script>
-const message = document.getElementById('messageContainer');
-const video = document.getElementById('bgVideo');
-const name = document.getElementById('nameText');
-
-// 🌸 Continuous floating hearts + sparkles
-function createParticle(type) {
-  const particle = document.createElement('div');
-  particle.classList.add(type);
-  let x = Math.random() * window.innerWidth;
-  let y = Math.random() * window.innerHeight;
-  particle.style.left = x + 'px';
-  particle.style.top = y + 'px';
-  document.body.appendChild(particle);
-
-  const dx = (Math.random() - 0.5) * 2;
-  const dy = -Math.random() * 2 - 1;
-  let opacity = 1;
-  const animate = setInterval(() => {
-    y += dy;
-    x += dx;
-    opacity -= 0.01;
-    particle.style.transform = `translate(${x}px, ${y}px)`;
-    particle.style.opacity = opacity;
-    if (opacity <= 0) {
-      clearInterval(animate);
-      particle.remove();
+  (function() {
+    // DOM elements (original IDs kept)
+    const messageDiv = document.getElementById('messageContainer');
+    const video = document.getElementById('bgVideo');
+    const nameSpan = document.getElementById('nameText');
+    const tapHintEl = document.getElementById('tapHint');
+    
+    let revealed = false;
+    
+    // ---------- 1. CONTINUOUS FLOATING HEARTS & SPARKLES (original style but enhanced) ----------
+    function createParticle(type) {
+      const particle = document.createElement('div');
+      particle.classList.add(type);
+      let x = Math.random() * window.innerWidth;
+      let y = Math.random() * window.innerHeight;
+      particle.style.left = x + 'px';
+      particle.style.top = y + 'px';
+      document.body.appendChild(particle);
+      
+      const dx = (Math.random() - 0.5) * 2.2;
+      const dy = -Math.random() * 2.5 - 1.2;  // upward drift
+      let opacity = 0.9;
+      let life = 1;
+      const animate = setInterval(() => {
+        y += dy;
+        x += dx;
+        opacity -= 0.012;
+        life -= 0.01;
+        particle.style.transform = `translate(${x}px, ${y}px)`;
+        particle.style.opacity = opacity;
+        if (opacity <= 0.02 || y < -100 || x > window.innerWidth + 200 || x < -200) {
+          clearInterval(animate);
+          if (particle.parentNode) particle.remove();
+        }
+      }, 18);
     }
-  }, 16);
-}
-setInterval(() => { createParticle('heart'); createParticle('sparkle'); }, 300);
-
-// 💖 Click → explosion + reveal message + name + play video
-let revealed = false;
-document.addEventListener('click', function(e) {
-  // Explosion
-  for (let i = 0; i < 20; i++) {
-    const particle = document.createElement('div');
-    particle.classList.add(Math.random() > 0.5 ? 'heart' : 'sparkle');
-    particle.style.left = e.clientX + 'px';
-    particle.style.top = e.clientY + 'px';
-    document.body.appendChild(particle);
-
-    const angle = Math.random() * 2 * Math.PI;
-    const speed = Math.random() * 5 + 2;
-    let x = e.clientX, y = e.clientY;
-    let opacity = 1;
-    const animate = setInterval(() => {
-      x += Math.cos(angle) * speed;
-      y += Math.sin(angle) * speed;
-      opacity -= 0.02;
-      particle.style.transform = `translate(${x}px, ${y}px)`;
-      particle.style.opacity = opacity;
-      if (opacity <= 0) {
-        clearInterval(animate);
-        particle.remove();
+    
+    // launch floating hearts & sparkles periodically
+    setInterval(() => { 
+      createParticle('heart'); 
+      setTimeout(() => createParticle('sparkle'), 60);
+    }, 320);
+    
+    // additional sparkle flurries for dreamy effect
+    setInterval(() => {
+      if (Math.random() > 0.65) createParticle('sparkle');
+    }, 280);
+    
+    // ---------- 2. EXPLOSION FUNCTION (improved from original, bigger joy) ----------
+    function createExplosion(clickX, clickY) {
+      const particleCount = 32;  // rich explosion
+      for (let i = 0; i < particleCount; i++) {
+        const isHeart = Math.random() > 0.45;
+        const particle = document.createElement('div');
+        particle.classList.add(isHeart ? 'heart' : 'sparkle');
+        // for extra variety, sometimes scale hearts a bit bigger
+        if (isHeart && Math.random() > 0.7) {
+          particle.style.width = '38px';
+          particle.style.height = '38px';
+        }
+        particle.style.left = clickX + 'px';
+        particle.style.top = clickY + 'px';
+        document.body.appendChild(particle);
+        
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 7 + 3.5;
+        let x = clickX, y = clickY;
+        let opacity = 1;
+        let vx = Math.cos(angle) * speed;
+        let vy = Math.sin(angle) * speed - 1.2; // slight upward kick
+        let gravity = 0.18;
+        
+        const animateExplosion = setInterval(() => {
+          x += vx;
+          y += vy;
+          vy += gravity;
+          opacity -= 0.022;
+          particle.style.transform = `translate(${x}px, ${y}px)`;
+          particle.style.opacity = opacity;
+          if (opacity <= 0.02 || y > window.innerHeight + 150 || x < -200 || x > window.innerWidth + 200) {
+            clearInterval(animateExplosion);
+            if (particle.parentNode) particle.remove();
+          }
+        }, 16);
       }
-    }, 16);
-  }
-
-  // Reveal message and name ONCE
-  if (!revealed) {
-    revealed = true;
-    message.classList.add('show');
-    name.classList.add('show');
-
-    // Play video after 2 seconds
-    setTimeout(() => {
-      document.body.style.background = 'none';
-      video.style.display = 'block';
-    }, 2000);
-  }
-});
+      
+      // BONUS: 8 additional big sparkling stars for extra glam
+      for (let s = 0; s < 12; s++) {
+        const bonusSpark = document.createElement('div');
+        bonusSpark.classList.add('sparkle');
+        bonusSpark.style.width = '12px';
+        bonusSpark.style.height = '12px';
+        bonusSpark.style.background = 'radial-gradient(circle, #fff0a3, #ffcc55)';
+        bonusSpark.style.left = clickX + (Math.random() - 0.5) * 40 + 'px';
+        bonusSpark.style.top = clickY + (Math.random() - 0.5) * 40 + 'px';
+        document.body.appendChild(bonusSpark);
+        let angBonus = Math.random() * 2 * Math.PI;
+        let spBonus = Math.random() * 5 + 2;
+        let bx = clickX, by = clickY;
+        let opBonus = 0.95;
+        let vxBonus = Math.cos(angBonus) * spBonus;
+        let vyBonus = Math.sin(angBonus) * spBonus - 1;
+        let gravBonus = 0.12;
+        const animateBonus = setInterval(() => {
+          bx += vxBonus;
+          by += vyBonus;
+          vyBonus += gravBonus;
+          opBonus -= 0.025;
+          bonusSpark.style.transform = `translate(${bx}px, ${by}px)`;
+          bonusSpark.style.opacity = opBonus;
+          if (opBonus <= 0.02) {
+            clearInterval(animateBonus);
+            if (bonusSpark.parentNode) bonusSpark.remove();
+          }
+        }, 18);
+      }
+    }
+    
+    // ---------- 3. ADDITIONAL REVEAL MAGIC: RAINBOW SPARKLE SHOWER & CONFETTI ----------
+    function afterRevealCelebration() {
+      // extra heart rain for 6 seconds
+      let heartRainInterval = setInterval(() => {
+        if (!revealed) return;
+        const rainHeart = document.createElement('div');
+        rainHeart.classList.add('heart');
+        rainHeart.style.left = Math.random() * window.innerWidth + 'px';
+        rainHeart.style.top = '-40px';
+        rainHeart.style.width = '28px';
+        rainHeart.style.height = '28px';
+        document.body.appendChild(rainHeart);
+        let yPos = -40;
+        let xDrift = (Math.random() - 0.5) * 1.4;
+        let xPos = parseFloat(rainHeart.style.left);
+        let fallOpacity = 0.9;
+        const fallAnim = setInterval(() => {
+          yPos += 3.8;
+          xPos += xDrift;
+          fallOpacity -= 0.014;
+          rainHeart.style.transform = `translate(${xPos - parseFloat(rainHeart.style.left)}px, ${yPos + 40}px)`;
+          rainHeart.style.opacity = fallOpacity;
+          if (yPos > window.innerHeight + 100 || fallOpacity <= 0.02) {
+            clearInterval(fallAnim);
+            if (rainHeart.parentNode) rainHeart.remove();
+          }
+        }, 20);
+      }, 220);
+      setTimeout(() => clearInterval(heartRainInterval), 7000);
+      
+      // shimmering sparkle wave
+      for (let i = 0; i < 60; i++) {
+        setTimeout(() => {
+          const twinkle = document.createElement('div');
+          twinkle.classList.add('sparkle');
+          twinkle.style.left = Math.random() * window.innerWidth + 'px';
+          twinkle.style.top = Math.random() * window.innerHeight + 'px';
+          twinkle.style.width = '7px';
+          twinkle.style.height = '7px';
+          document.body.appendChild(twinkle);
+          let fadeSpark = 1;
+          const sparkleAnim = setInterval(() => {
+            fadeSpark -= 0.05;
+            twinkle.style.opacity = fadeSpark;
+            if (fadeSpark <= 0) {
+              clearInterval(sparkleAnim);
+              if (twinkle.parentNode) twinkle.remove();
+            }
+          }, 40);
+        }, i * 35);
+      }
+    }
+    
+    // ---------- 4. MAIN REVEAL LOGIC (original structure + video & background integration) ----------
+    function revealBirthday(e) {
+      if (revealed) return;
+      
+      // get click/touch coordinates for explosion
+      let clientX, clientY;
+      if (e.touches) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+      // safety fallback
+      if (!clientX || !clientY) {
+        clientX = window.innerWidth / 2;
+        clientY = window.innerHeight / 2;
+      }
+      
+      // 1. Instant explosion at tap point
+      createExplosion(clientX, clientY);
+      
+      // 2. Reveal message + name (original style)
+      messageDiv.classList.add('show');
+      nameSpan.classList.add('show');
+      
+      // 3. Hide tap hint gracefully
+      if (tapHintEl) tapHintEl.classList.add('hide');
+      
+      // 4. After 0.9s, remove background image and show video (as original combined)
+      setTimeout(() => {
+        // remove pink background image (set to none) so video becomes visible
+        document.body.style.background = 'none';
+        // show video with fade effect
+        video.style.display = 'block';
+        video.classList.add('show-video');
+        // attempt to play video (autoplay muted should work)
+        video.play().catch(err => console.log("video autoplay blocked but visible", err));
+        // add a soft dark overlay to keep text readable
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0,0,0,0.2)';
+        overlay.style.pointerEvents = 'none';
+        overlay.style.zIndex = '5';
+        document.body.appendChild(overlay);
+      }, 900);
+      
+      // 5. Extra sparkle celebration & heart rain (after reveal)
+      setTimeout(() => {
+        afterRevealCelebration();
+      }, 400);
+      
+      // 6. Also create a sweet "20" floating effect
+      for (let i = 0; i < 18; i++) {
+        setTimeout(() => {
+          const digit = document.createElement('div');
+          digit.innerText = ['✨','🎂','20','💖','🎈'][Math.floor(Math.random()*5)];
+          digit.style.position = 'absolute';
+          digit.style.left = (clientX + (Math.random() - 0.5) * 180) + 'px';
+          digit.style.top = (clientY + (Math.random() - 0.5) * 150) + 'px';
+          digit.style.fontSize = '28px';
+          digit.style.pointerEvents = 'none';
+          digit.style.opacity = '1';
+          digit.style.fontWeight = 'bold';
+          digit.style.textShadow = '0 0 6px hotpink';
+          digit.style.zIndex = '250';
+          document.body.appendChild(digit);
+          let floatY = 0;
+          let lifeSpan = 1;
+          const floatAnim = setInterval(() => {
+            floatY -= 1.2;
+            lifeSpan -= 0.02;
+            digit.style.transform = `translateY(${floatY}px)`;
+            digit.style.opacity = lifeSpan;
+            if (lifeSpan <= 0) {
+              clearInterval(floatAnim);
+              if (digit.parentNode) digit.remove();
+            }
+          }, 35);
+        }, i * 45);
+      }
+      
+      revealed = true;
+    }
+    
+    // ---------- 5. EVENT LISTENERS (click & touch, original pattern) ----------
+    function handleTap(e) {
+      if (!revealed) {
+        e.preventDefault();   // avoid zoom on mobile before reveal
+        revealBirthday(e);
+      } else {
+        // After reveal, tapping creates mini explosions for fun but doesn't re-trigger main reveal
+        let tapX, tapY;
+        if (e.touches) {
+          tapX = e.touches[0].clientX;
+          tapY = e.touches[0].clientY;
+          e.preventDefault();
+        } else {
+          tapX = e.clientX;
+          tapY = e.clientY;
+        }
+        if (tapX && tapY) {
+          // mini burst (smaller but cheerful)
+          for (let i = 0; i < 14; i++) {
+            const miniPart = document.createElement('div');
+            miniPart.classList.add(Math.random() > 0.5 ? 'heart' : 'sparkle');
+            miniPart.style.left = tapX + 'px';
+            miniPart.style.top = tapY + 'px';
+            document.body.appendChild(miniPart);
+            const angleMini = Math.random() * 2 * Math.PI;
+            const speedMini = Math.random() * 5 + 2;
+            let mx = tapX, my = tapY;
+            let opMini = 1;
+            const miniAnim = setInterval(() => {
+              mx += Math.cos(angleMini) * speedMini;
+              my += Math.sin(angleMini) * speedMini;
+              opMini -= 0.025;
+              miniPart.style.transform = `translate(${mx}px, ${my}px)`;
+              miniPart.style.opacity = opMini;
+              if (opMini <= 0) {
+                clearInterval(miniAnim);
+                if (miniPart.parentNode) miniPart.remove();
+              }
+            }, 16);
+          }
+        }
+      }
+    }
+    
+    document.addEventListener('click', handleTap);
+    document.addEventListener('touchstart', handleTap, { passive: false });
+    
+    // ---------- 6. PRELOAD VIDEO & ensure video is ready but hidden ----------
+    video.style.display = 'none';
+    video.style.opacity = '0';
+    video.load();
+    
+    // Additional warm-up: floating hearts at start (same as original charm)
+    for (let warm = 0; warm < 18; warm++) {
+      setTimeout(() => {
+        createParticle('heart');
+        createParticle('sparkle');
+      }, warm * 120);
+    }
+    
+    // also ensure that if someone clicks background image, it works with original pink_background.jpg reference
+    // everything is integrated: pink_background.jpg as initial background, video swap later.
+    console.log("🎂 Happy 20th Birthday Nubb! Tap anywere to unleash the celebration 💖");
+  })();
 </script>
 </body>
 </html>
