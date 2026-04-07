@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy 20th Birthday Nubb!</title>
+<style>
+  /* Full-screen pink background */
+  body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Dancing Script', cursive;
+    background: url('pink_background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Video hidden initially */
+  #bgVideo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+    z-index: -2;
+  }
+
+  /* Floating hearts & sparkles */
+  .heart, .sparkle {
+    position: absolute;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+  .heart {
+    width: 30px;
+    height: 30px;
+    background: red;
+    clip-path: polygon(50% 0%, 61% 10%, 70% 20%, 75% 30%, 70% 40%, 50% 60%, 30% 40%, 25% 30%, 30% 20%, 39% 10%);
+    opacity: 0.8;
+  }
+  .sparkle {
+    width: 8px;
+    height: 8px;
+    background: gold;
+    border-radius: 50%;
+    opacity: 0.8;
+  }
+
+  /* Tap-to-reveal message */
+  #messageContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    text-align: center;
+    font-size: 3em;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 1s ease;
+    text-shadow: 2px 2px 8px #ff69b4;
+  }
+  #messageContainer.show {
+    opacity: 1;
+  }
+
+  /* Name in cursive */
+  #nameText {
+    font-family: "Brush Script MT", cursive;
+    font-size: 50px;
+    color: #ff6fa5;
+    margin-top: 20px;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 1s ease;
+    text-shadow: 0 0 10px #ffb6d9, 0 0 20px #ffcce6;
+  }
+  #nameText.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<video id="bgVideo" autoplay muted loop>
+  <source src="your_video.mp4" type="video/mp4">
+</video>
+
+<div id="messageContainer">
+  🎉 Happy 20th Birthday Nubb! 🎉
+  <div id="nameText">Nubb 💕</div>
+</div>
+
+<script>
+const message = document.getElementById('messageContainer');
+const video = document.getElementById('bgVideo');
+const name = document.getElementById('nameText');
+
+// 🌸 Continuous floating hearts + sparkles
+function createParticle(type) {
+  const particle = document.createElement('div');
+  particle.classList.add(type);
+  let x = Math.random() * window.innerWidth;
+  let y = Math.random() * window.innerHeight;
+  particle.style.left = x + 'px';
+  particle.style.top = y + 'px';
+  document.body.appendChild(particle);
+
+  const dx = (Math.random() - 0.5) * 2;
+  const dy = -Math.random() * 2 - 1;
+  let opacity = 1;
+  const animate = setInterval(() => {
+    y += dy;
+    x += dx;
+    opacity -= 0.01;
+    particle.style.transform = `translate(${x}px, ${y}px)`;
+    particle.style.opacity = opacity;
+    if (opacity <= 0) {
+      clearInterval(animate);
+      particle.remove();
+    }
+  }, 16);
+}
+setInterval(() => { createParticle('heart'); createParticle('sparkle'); }, 300);
+
+// 💖 Click → explosion + reveal message + name + play video
+let revealed = false;
+document.addEventListener('click', function(e) {
+  // Explosion
+  for (let i = 0; i < 20; i++) {
+    const particle = document.createElement('div');
+    particle.classList.add(Math.random() > 0.5 ? 'heart' : 'sparkle');
+    particle.style.left = e.clientX + 'px';
+    particle.style.top = e.clientY + 'px';
+    document.body.appendChild(particle);
+
+    const angle = Math.random() * 2 * Math.PI;
+    const speed = Math.random() * 5 + 2;
+    let x = e.clientX, y = e.clientY;
+    let opacity = 1;
+    const animate = setInterval(() => {
+      x += Math.cos(angle) * speed;
+      y += Math.sin(angle) * speed;
+      opacity -= 0.02;
+      particle.style.transform = `translate(${x}px, ${y}px)`;
+      particle.style.opacity = opacity;
+      if (opacity <= 0) {
+        clearInterval(animate);
+        particle.remove();
+      }
+    }, 16);
+  }
+
+  // Reveal message and name ONCE
+  if (!revealed) {
+    revealed = true;
+    message.classList.add('show');
+    name.classList.add('show');
+
+    // Play video after 2 seconds
+    setTimeout(() => {
+      document.body.style.background = 'none';
+      video.style.display = 'block';
+    }, 2000);
+  }
+});
+</script>
+</body>
+</html>
