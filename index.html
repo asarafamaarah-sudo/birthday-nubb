@@ -151,7 +151,7 @@
 </head>
 <body>
 
-<video id="bgVideo" autoplay muted loop playsinline>
+<video id="bgVideo" autoplay loop playsinline>
   <source src="birthday_video.mp4" type="video/mp4">
 </video>
 
@@ -308,10 +308,13 @@
 
     /* 4. Swap background → video */
     setTimeout(() => {
-      document.body.style.backgroundImage = 'none';   /* remove pink jpg */
+      document.body.style.backgroundImage = 'none';
 
-      video.style.display  = 'block';
-      /* tiny rAF so display:block paints before opacity transition fires */
+      /* unmute here — this runs inside a user-gesture callback so browsers allow it */
+      video.muted  = false;
+      video.volume = 1.0;
+
+      video.style.display = 'block';
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           video.classList.add('show-video');
@@ -320,7 +323,9 @@
       });
 
       video.play().catch(() => {
-        /* autoplay blocked – video is still visible, just paused */
+        /* if browser still blocks (e.g. power saving mode), fall back to muted */
+        video.muted = true;
+        video.play();
       });
     }, 900);
 
